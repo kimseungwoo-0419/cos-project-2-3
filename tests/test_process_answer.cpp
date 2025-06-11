@@ -145,7 +145,7 @@ int main(int argc, char *argv[])
   tmp = (int)max_temp;
   VAR_TO_MEM_4BYTES_BIG_ENDIAN(tmp, p);
 
-  tmp = p - buf;
+  tmp = p - buf;  
   PRINT_MEM(buf, tmp);
 
 	return 0;

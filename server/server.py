@@ -108,6 +108,83 @@ class Server:
 
         self.send_instance(lst, is_training)
 
+    # def parse_data(self, sock, is_training):
+    #     # 1. opcode
+    #     opcode = sock[0:1]
+    #     # if not opcode or opcode[0] != 0x01:
+    #     #     logging.warning("Invalid or missing opcode")
+    #     #     return
+
+    #     # 2. 각 길이 읽기
+    #     temp_len = sock[1]
+    #     humid_len = sock[2]
+    #     power_len = sock[3]
+    #     month_len = sock[4]
+
+    #     # 3. 각 데이터 받기
+    #     temp = int.from_bytes(sock[5:(5+temp_len)], byteorder="big", signed=True)
+    #     humid = int.from_bytes(sock[(5+temp_len):(5+temp_len+humid_len)], byteorder="big", signed=True)
+    #     power = int.from_bytes(sock[(5+temp_len+humid_len):(5+temp_len+humid_len+power_len)], byteorder="big", signed=True)
+    #     month = int.from_bytes(sock[(5+temp_len+humid_len+power_len):(5+temp_len+humid_len+power_len+month_len)], byteorder="big", signed=True)
+
+    #     lst = [temp, humid, power, month]
+    #     logging.info("[temp, humid, power, month] = {}".format(lst))
+
+    #     self.send_instance(lst, is_training)
+
+
+
+
+
+# import logging
+
+# class YourServerClass:
+#     # ...생략...
+
+#     def recv_full(self, sock, expected_len):
+#         buf = b''
+#         while len(buf) < expected_len:
+#             data = sock.recv(expected_len - len(buf))
+#             if not data:
+#                 raise ConnectionError("Socket closed before receiving full data")
+#             buf += data
+#         return buf
+
+#     def parse_data(self, sock, is_training):
+#         # 1. 먼저 opcode + 4 length 바이트를 받는다 (총 5바이트)
+#         header = self.recv_full(sock, 5)
+
+#         opcode = header[0]
+#         logging.debug(f"[*] opcode: {opcode}")
+#         if opcode != 0x01:
+#             logging.error(f"[*] invalid opcode: {opcode}")
+#             return
+
+#         temp_len = header[1]
+#         humid_len = header[2]
+#         power_len = header[3]
+#         month_len = header[4]
+
+#         total_data_len = temp_len + humid_len + power_len + month_len
+
+#         # 2. 데이터 바이트 전체 받기
+#         data_bytes = self.recv_full(sock, total_data_len)
+
+#         # 3. 각각 데이터 파싱
+#         idx = 0
+#         temp = int.from_bytes(data_bytes[idx:idx+temp_len], byteorder="big", signed=True)
+#         idx += temp_len
+#         humid = int.from_bytes(data_bytes[idx:idx+humid_len], byteorder="big", signed=True)
+#         idx += humid_len
+#         power = int.from_bytes(data_bytes[idx:idx+power_len], byteorder="big", signed=True)
+#         idx += power_len
+#         month = int.from_bytes(data_bytes[idx:idx+month_len], byteorder="big", signed=True)
+
+#         lst = [temp, humid, power, month]
+#         logging.info(f"[temp, humid, power, month] = {lst}")
+
+#         # 4. 받은 데이터 리스트 전송 (기존 send_instance 호출)
+#         self.send_instance(lst, is_training)
 
     # TODO: You should implement your own protocol in this function
     # The following implementation is just a simple example

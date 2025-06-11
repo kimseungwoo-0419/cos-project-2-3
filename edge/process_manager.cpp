@@ -28,7 +28,7 @@ uint8_t *ProcessManager::processData(DataSet *ds, int *dlen)
   PowerData *pdata;
   char buf[BUFLEN];
   ret = (uint8_t *)malloc(BUFLEN);
-  int tmp, min_humid, min_temp, min_power, month;
+  int tmp, min_humid, min_temp, max_temp, min_power, month, avg_temp, avg_power, sum_power;
   time_t ts;
   struct tm *tm;
 
@@ -40,27 +40,39 @@ uint8_t *ProcessManager::processData(DataSet *ds, int *dlen)
   // the minimum power data (2 bytes), the month value (1 byte) to the network manager
   
   // Example) getting the minimum daily temperature
-  min_temp = (int) tdata->getMin();
+  tmp = (int) tdata->getValue(); // 평균 기온
 
   // Example) getting the minimum daily humidity
-  min_humid = (int) hdata->getMin();
+  min_temp = (int) tdata->getMin(); // 최소 기온
+
+  max_temp = (int) tdata->getMax(); // 최고 기온
+
+
+  sum_power = 0;
+    for (int i=0; i<num; i++)
+    {
+      house = ds->getHouseData(i);
+      pdata = house->getPowerData();
+      sum_power += pdata->getValue();
+    }
+    avg_power = sum_power / num;
 
   // Example) getting the minimum power value
-  min_power = 10000;
-  for (int i=0; i<num; i++)
-  {
-    house = ds->getHouseData(i);
-    pdata = house->getPowerData();
-    tmp = (int)pdata->getValue();
+  // max_power = 0; // 최대 전력 소비량
+  // for (int i=0; i<num; i++)
+  // {
+  //   house = ds->getHouseData(i);
+  //   pdata = house->getPowerData();
+  //   tmp = (int)pdata->getValue();
 
-    if (tmp < min_power)
-      min_power = tmp;
-  }
+  //   if (tmp < max_power)
+  //     max_power = tmp;
+  // }
 
   // Example) getting the month value from the timestamp
-  ts = ds->getTimestamp();
-  tm = localtime(&ts);
-  month = tm->tm_mon + 1;
+  // ts = ds->getTimestamp();
+  // tm = localtime(&ts);
+  // month = tm->tm_mon + 1;
 
   // Example) initializing the memory to send to the network manager
   memset(ret, 0, BUFLEN);
@@ -68,13 +80,13 @@ uint8_t *ProcessManager::processData(DataSet *ds, int *dlen)
   p = ret;
 
   // Example) saving the values in the memory
+  VAR_TO_MEM_1BYTE_BIG_ENDIAN(tmp, p); //1바이트씩 잘라서 포인터p에 저장하고 다음 주소로 1바이트 만큼 이동. -> 1바이트만 저장하는 이유 -> 값이 256보다 작아서이다. 
+  *dlen += 1;
   VAR_TO_MEM_1BYTE_BIG_ENDIAN(min_temp, p);
   *dlen += 1;
-  VAR_TO_MEM_1BYTE_BIG_ENDIAN(min_humid, p);
-  *dlen += 1;
-  VAR_TO_MEM_2BYTES_BIG_ENDIAN(min_power, p);
+  VAR_TO_MEM_2BYTES_BIG_ENDIAN(avg_power, p);
   *dlen += 2;
-  VAR_TO_MEM_1BYTE_BIG_ENDIAN(month, p);
+  VAR_TO_MEM_1BYTE_BIG_ENDIAN(max_temp, p); // 가구수
   *dlen += 1;
 
   return ret;

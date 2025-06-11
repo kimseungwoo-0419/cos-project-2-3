@@ -108,6 +108,39 @@ int NetworkManager::sendData(uint8_t *data, int dlen)
   return 0;
 }
 
+
+// int NetworkManager::sendData(uint8_t *data, int dlen)
+// {
+//     int sock = this->sock;
+    
+//     int sent, offset;
+
+//     // data: [temp, humid, power(2 bytes), month]
+//     // opcode
+//     unsigned char opcode = OPCODE_DATA;
+//     write(sock, &opcode, 1);
+
+//     // Define lengths
+//     uint8_t temp_len = 1;
+//     uint8_t humid_len = 1;
+//     uint8_t power_len = 2;
+//     uint8_t month_len = 1;
+
+//     // Send lengths
+//     write(sock, &temp_len, 1);
+//     write(sock, &humid_len, 1);
+//     write(sock, &power_len, 1);
+//     write(sock, &month_len, 1);
+
+//     // Send data values
+//     write(sock, data + 0, 1);  // temp
+//     write(sock, data + 1, 1);  // humid
+//     write(sock, data + 2, 2);  // power
+//     write(sock, data + 4, 1);  // month
+
+//     return 0;
+// }
+
 // TODO: Please revise or implement this function as you want. You can also remove this function if it is not needed
 uint8_t NetworkManager::receiveCommand() 
 {
