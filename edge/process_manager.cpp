@@ -28,7 +28,8 @@ uint8_t *ProcessManager::processData(DataSet *ds, int *dlen)
   PowerData *pdata;
   char buf[BUFLEN];
   ret = (uint8_t *)malloc(BUFLEN);
-  int tmp, min_humid, min_temp, max_temp, min_power, month, avg_temp, avg_power, sum_power;
+  int power, tmp, min_humid, min_temp, max_temp, min_power, month, avg_temp, avg_power, sum_power, max_power;
+  
   time_t ts;
   struct tm *tm;
 
@@ -56,6 +57,19 @@ uint8_t *ProcessManager::processData(DataSet *ds, int *dlen)
       sum_power += pdata->getValue();
     }
     avg_power = sum_power / num;
+
+  max_power = -1;
+  for (int i=0; i<num; i++)
+  {
+    house = ds->getHouseData(i);
+    pdata = house->getPowerData();
+    power = pdata->getValue();
+
+    if (power > max_power)
+      max_power = power;
+  }
+
+
 
   // Example) getting the minimum power value
   // max_power = 0; // 최대 전력 소비량
